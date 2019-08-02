@@ -3,12 +3,15 @@ package sg.edu.rp.c346.rpwebsites;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,10 +96,38 @@ public class MainActivity extends AppCompatActivity {
 
                 intent.putExtra("website", url);
 
+                int cate = spnCat.getSelectedItemPosition();
+                int subCate = spnSubCat.getSelectedItemPosition();
+
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                SharedPreferences.Editor prefEdit = prefs.edit();
+
+                prefEdit.putInt("cate", cate);
+                prefEdit.putInt("subCate", subCate);
+
+                prefEdit.commit();
+
                 startActivity(intent);
 
             }
         });
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        int selCat = prefs.getInt("cate", 0);
+        int selSubCat = prefs.getInt("subCate", 0);
+
+        spnCat.setSelection(selCat);
+        spnSubCat.setSelection(selSubCat);
+
+        Toast.makeText(this, ""+ selSubCat, Toast.LENGTH_SHORT).show();
+
+    }
+
 }
